@@ -62,7 +62,7 @@ for info in "${hosts_info[@]}"; do
   summary=$summary$(echo -n $msg)
 done
 
-if [[ "$LOGININFO" == "Y" ]]; then
-  chmod +x ./tgsend.sh
-  ./tgsend.sh "$summary"
-fi
+#if [[ "$LOGININFO" == "Y" ]]; then
+#  chmod +x ./tgsend.sh
+#  ./tgsend.sh "$summary"
+#fi
