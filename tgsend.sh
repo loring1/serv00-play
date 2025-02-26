@@ -69,34 +69,8 @@ formatted_msg=$(echo "$result" | awk -F'|' '{print $1}')
 host=$(echo "$result" | awk -F'|' '{print $2}')
 user=$(echo "$result" | awk -F'|' '{print $3}')
 
-if [[ "$BUTTON_URL" == "null" ]]; then
-  button_url="https://www.youtube.com/@frankiejun8965"
-else
-  button_url=${BUTTON_URL:-"https://www.youtube.com/@frankiejun8965"}
-fi
-
 URL="https://api.telegram.org/bot${telegramBotToken}/sendMessage"
 
-if [[ -n "$host" ]]; then
-  button_url=$(replaceValue $button_url HOST $host)
-fi
-if [[ -n "$user" ]]; then
-  button_url=$(replaceValue $button_url USER $user)
-fi
-if [[ -n "$PASS" ]]; then
-  pass=$(toBase64 $PASS)
-  button_url=$(replaceValue $button_url PASS $pass)
-fi
-encoded_url=$(urlencode "$button_url")
-#echo "encoded_url: $encoded_url"
-reply_markup='{
-    "inline_keyboard": [
-      [
-        {"text": "点击查看", "url": "'"${encoded_url}"'"}
-      ]
-    ]
-  }'
-#echo "reply_markup: $reply_markup"
 #echo "telegramBotToken:$telegramBotToken,telegramBotUserId:$telegramBotUserId"
 if [[ -z ${telegramBotToken} ]]; then
   echo "未配置TG推送"
@@ -104,8 +78,7 @@ else
   res=$(curl -s -X POST "https://api.telegram.org/bot${telegramBotToken}/sendMessage" \
     -d chat_id="${telegramBotUserId}" \
     -d parse_mode="Markdown" \
-    -d text="$formatted_msg" \
-    -d reply_markup="$reply_markup")
+    -d text="$formatted_msg" )
   if [ $? == 124 ]; then
     echo 'TG_api请求超时,请检查网络是否重启完成并是否能够访问TG'
     exit 1
